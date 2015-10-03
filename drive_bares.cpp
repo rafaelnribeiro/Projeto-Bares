@@ -14,26 +14,31 @@ std::vector<std::string> token(std::string str)
 {
 	std::string num;
 	std::vector<std::string> exps;
-	for(char c: str)
+	unsigned int i = 0;
+	while(i < str.size())
 	{
-		if (digits.find(c) != std::string::npos)
+		if (digits.find(str[i]) != std::string::npos)
 		{
-			num.push_back(c);
-		}
-		else if(symbols.find(c) != std::string::npos)
-		{
-			if(num.size() > 0)
+			while(digits.find(str[i]) != std::string::npos)
 			{
-				exps.push_back(num);
-				num.resize(0);
+				num.push_back(str[i]);
+				++i;
 			}
-			std::string s(1,c);
+			exps.push_back(num);
+			num.resize(0);
+		}
+
+		if(symbols.find(str[i]) != std::string::npos)
+		{
+			std::string s(1,str[i]);
 			exps.push_back(s);
 		}
-		else if(!isspace(c))
+		else if(!isspace(str[i]) && str[i] != '\0')
 		{
-			std::cout << std::endl << "Símbolo "<< c <<" é inválido!" << std::endl;
+			std::cout << std::endl << "Símbolo "<< str[i] <<" é inválido!" << std::endl;
 		}
+
+		++i;
 	}
 	return exps;
 }
@@ -59,7 +64,6 @@ int main(int argc, char const *argv[])
 	else
 	{
 		std::cout << "Arquivo aberto com sucesso" << std::endl;
-
 	}
 
 	std::string expression;
