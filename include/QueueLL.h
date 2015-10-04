@@ -36,7 +36,7 @@ class QueueLL {
         void clear();
 
         inline friend std::ostream &operator << (std::ostream& _os, const QueueLL& _oList) {
-			node * current = _oList.mpEnd;
+			node * current = _oList.mpHead;
 			_os << "Fila: [ ";
 			while(current != nullptr) {
 				_os << "(" << current->miData << ") ";

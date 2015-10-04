@@ -16,12 +16,14 @@ void QueueLL<Data>::insert(const Data & _data) {
 
     node * newNode = new node();
     newNode->miData = _data;
-    newNode->mpNext = this->mpEnd;
     if (this->mpHead == nullptr && this->mpEnd == nullptr) {
         this->mpEnd = newNode;
         this->mpHead = newNode;
+        newNode->mpNext = nullptr;
     } else {
+        this->mpEnd->mpNext = newNode;
         this->mpEnd = newNode;
+        newNode->mpNext = nullptr;
     }
 }
 
@@ -69,10 +71,12 @@ bool QueueLL<Data>::empty(){
 
 template <typename Data>
 void QueueLL<Data>::clear () {
-
-    while (this->mpEnd != nullptr) {
-        this->remove();
+    node * tmp;
+    while (this->mpHead != nullptr) {
+        tmp = this->mpHead;
+    	this->mpHead = this->mpHead->mpNext;
+    	delete tmp;
     }
 
-
+    this->mpEnd = nullptr;
 }
