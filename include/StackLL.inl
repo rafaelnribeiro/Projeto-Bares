@@ -11,7 +11,7 @@ StackLL<Data>::~StackLL()
 }
 
 template <typename Data>
-void StackLL<Data>::push(const Data _data)
+void StackLL<Data>::push(const Data & _data)
 {
 	node * newNode = new node();
 	newNode->miData = _data;

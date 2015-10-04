@@ -6,6 +6,7 @@ QueueLL<Data>::QueueLL() {
 
 }
 
+template <typename Data>
 QueueLL<Data>::~QueueLL() {
     this->clear();
 }
@@ -14,7 +15,7 @@ template <typename Data>
 void QueueLL<Data>::insert(const Data & _data) {
 
     node * newNode = new node();
-    newNode->miData = this->_data;
+    newNode->miData = _data;
     newNode->mpNext = this->mpEnd;
     if (this->mpHead == nullptr && this->mpEnd == nullptr) {
         this->mpEnd = newNode;
@@ -57,7 +58,7 @@ const Data & QueueLL<Data>::end() const {
 }
 
 template <typename Data>
-bool QueueLL<Data>::empty() const {
+bool QueueLL<Data>::empty(){
 
     if (this->mpEnd == nullptr && this->mpHead == nullptr )
         return true;

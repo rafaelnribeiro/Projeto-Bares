@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <ostream>
+#include <stdexcept>
 
 template <typename Data>
 
@@ -25,11 +26,11 @@ class QueueLL {
         QueueLL();
         ~QueueLL();
 
-        void insert (const Data _data);
+        void insert (const Data & _data);
         Data remove ();
 
-        const Data & begin();
-        const Data & end();
+        const Data & begin() const;
+        const Data & end() const;
 
         bool empty();
         void clear();
@@ -46,24 +47,5 @@ class QueueLL {
 		}
 
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#include <QueueLL.inl>
 #endif
