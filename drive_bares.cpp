@@ -6,7 +6,9 @@
 
 std::string digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
-std::string symbols = {'(', ')', '^', '*', '/', '%', '-', '+'};
+std::string valOperators = {'(', ')', '^', '*', '/', '%', '-', '+'};
+
+std::string invOperators = {'=', '>', '<', '.'};
 
 
 
@@ -14,6 +16,7 @@ std::vector<std::string> token(std::string str)
 {
 	std::string num;
 	std::vector<std::string> exps;
+	int col = 0;
 	unsigned int i = 0;
 	while(i < str.size())
 	{
@@ -28,16 +31,23 @@ std::vector<std::string> token(std::string str)
 			num.resize(0);
 		}
 
-		if(symbols.find(str[i]) != std::string::npos)
+		if(valOperators.find(str[i]) != std::string::npos)
 		{
 			std::string s(1,str[i]);
 			exps.push_back(s);
 		}
+		else if(invOperators.find(str[i]) != std::string::npos)
+		{
+			std::cout << "Erro na coluna " << col << ": O operador '"
+					  << str[i] << "'não pertence à lista de operadores válidos!" << std::endl;
+		}
 		else if(!isspace(str[i]) && str[i] != '\0')
 		{
-			std::cout << std::endl << "Símbolo "<< str[i] <<" é inválido!" << std::endl;
+			std::cout << "Erro na coluna " << col << ": O operando '"
+					  << str[i] << "' não é uma constante válida!" << std::endl;
 		}
 
+		++col;
 		++i;
 	}
 	return exps;
@@ -76,7 +86,7 @@ int main(int argc, char const *argv[])
 		{
 			std::cout << "{" << e << "} ";
 		}
-		std::cout << std::endl;
+		std::cout << std::endl << std::endl;
 	}
 
 	return 0;
