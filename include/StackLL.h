@@ -45,7 +45,7 @@ class StackLL
 			_os << "]" << std::endl;
 			return _os;
 		}
-};	
+};
 
 #include <StackLL.inl>
 #endif
