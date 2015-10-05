@@ -13,56 +13,68 @@ std::string valOperators = {'(', ')', '^', '*', '/', '%', '-', '+'};
 
 std::string invOperators = {'=', '>', '<', '.'};
 
+enum SimbolType {OPERATOR, OPERAND};
 
-
-bool token(std::string str, QueueLL<std::string> & exps)
+struct token
 {
-	bool sucess = true;
-	std::string num;
+	std::string info;
+	SimbolType type;
+	bool isValid;
+	int position;
+};
+
+
+void stringToInfix(std::string str, QueueLL<token> & exps)
+{
 	unsigned int i = 0;
 	while(i < str.size())
 	{
-		if (digits.find(str[i]) != std::string::npos)
+		if(digits.find(str[i]) != std::string::npos)
 		{
+			std::string num;
 			int ini = i;
+
 			while(digits.find(str[i]) != std::string::npos)
 			{
 				num.push_back(str[i]);
 				++i;
 			}
-			int tmp = stoi(num);
-			if(tmp > 32.767)
-			{
-				std::cout << "Erro na coluna " << ini << ": O operando'"
-					  	  << tmp << "' está fora da faixa permitida!" << std::endl;
-				sucess = false;
-			}
-			else
-				exps.insert(num);
 
-			num.resize(0);
+			token tmp;
+			tmp.info = num;
+			tmp.type = OPERAND;
+			tmp.isValid = true;
+			tmp.position = ini;
+			exps.insert(tmp);
 		}
 
-		if(valOperators.find(str[i]) != std::string::npos)
+		if(!isspace(str[i]) && str[i] != '\0')
 		{
 			std::string s(1,str[i]);
-			exps.insert(s);
-		}
-		else if(invOperators.find(str[i]) != std::string::npos)
-		{
-			std::cout << "Erro na coluna " << i << ": O operador '"
-					  << str[i] << "' não pertence à lista de operadores válidos!" << std::endl;
-			sucess = false;
-		}
-		else if(!isspace(str[i]) && str[i] != '\0')
-		{
-			std::cout << "Erro na coluna " << i << ": O operando '"
-					  << str[i] << "' não é uma constante válida!" << std::endl;
-			sucess = false;
+
+			token tmp;
+			tmp.info = s;
+			tmp.position = i;
+
+			if(valOperators.find(str[i]) != std::string::npos)
+			{
+				tmp.type = OPERATOR;
+				tmp.isValid = true;
+			}
+			else if(invOperators.find(str[i]) != std::string::npos)
+			{
+				tmp.type = OPERATOR;
+				tmp.isValid = false;
+			}
+			else
+			{
+				tmp.type = OPERAND;
+				tmp.isValid = false;
+			}
+			exps.insert(tmp);
 		}
 		++i;
 	}
-	return sucess;
 }
 
 int main(int argc, char const *argv[])
@@ -92,18 +104,18 @@ int main(int argc, char const *argv[])
 
 	while(!myStream.eof())
 	{
-		QueueLL<std::string> exps;
+		QueueLL<token> exps;
 
 		getline(myStream, expression);
+	
+		stringToInfix(expression, exps);
 
-		//Se não houveram erros na tokenização		
-		if(token(expression, exps))
+		while(!exps.empty())
 		{
-			//Realizar a conversão da fila exps de Infixo para Posfixo
-			std::cout << "Sucesso!" << std::endl;
+			token tmp = exps.remove();
+			std::cout << "{ " << tmp.info << ", " << tmp.type << ", " << tmp.position << ", " << tmp.isValid << "} ";
 		}
-		std::cout << std::endl << std::endl;
-
+		std::cout << std::endl;
 	}
 
 	return 0;
