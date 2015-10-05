@@ -1,3 +1,6 @@
+#include <StackLL.h>
+#include <QueueLL.h>
+
 #include <iostream>
 #include <fstream>
 #include <utility>
@@ -12,45 +15,54 @@ std::string invOperators = {'=', '>', '<', '.'};
 
 
 
-std::vector<std::string> token(std::string str)
+bool token(std::string str, QueueLL<std::string> & exps)
 {
+	bool sucess = true;
 	std::string num;
-	std::vector<std::string> exps;
-	int col = 0;
 	unsigned int i = 0;
 	while(i < str.size())
 	{
 		if (digits.find(str[i]) != std::string::npos)
 		{
+			int ini = i;
 			while(digits.find(str[i]) != std::string::npos)
 			{
 				num.push_back(str[i]);
 				++i;
 			}
-			exps.push_back(num);
+			int tmp = stoi(num);
+			if(tmp > 32.767)
+			{
+				std::cout << "Erro na coluna " << ini << ": O operando'"
+					  	  << tmp << "' está fora da faixa permitida!" << std::endl;
+				sucess = false;
+			}
+			else
+				exps.insert(num);
+
 			num.resize(0);
 		}
 
 		if(valOperators.find(str[i]) != std::string::npos)
 		{
 			std::string s(1,str[i]);
-			exps.push_back(s);
+			exps.insert(s);
 		}
 		else if(invOperators.find(str[i]) != std::string::npos)
 		{
-			std::cout << "Erro na coluna " << col << ": O operador '"
-					  << str[i] << "'não pertence à lista de operadores válidos!" << std::endl;
+			std::cout << "Erro na coluna " << i << ": O operador '"
+					  << str[i] << "' não pertence à lista de operadores válidos!" << std::endl;
+			sucess = false;
 		}
 		else if(!isspace(str[i]) && str[i] != '\0')
 		{
-			std::cout << "Erro na coluna " << col << ": O operando '"
+			std::cout << "Erro na coluna " << i << ": O operando '"
 					  << str[i] << "' não é uma constante válida!" << std::endl;
+			sucess = false;
 		}
-
-		++col;
 		++i;
 	}
-	return exps;
+	return sucess;
 }
 
 int main(int argc, char const *argv[])
@@ -80,13 +92,18 @@ int main(int argc, char const *argv[])
 
 	while(!myStream.eof())
 	{
+		QueueLL<std::string> exps;
+
 		getline(myStream, expression);
-		std::vector<std::string> exps = token(expression);
-		for (std::string e: exps)
+
+		//Se não houveram erros na tokenização		
+		if(token(expression, exps))
 		{
-			std::cout << "{" << e << "} ";
+			//Realizar a conversão da fila exps de Infixo para Posfixo
+			std::cout << "Sucesso!" << std::endl;
 		}
 		std::cout << std::endl << std::endl;
+
 	}
 
 	return 0;

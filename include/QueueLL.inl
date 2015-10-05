@@ -32,6 +32,10 @@ Data QueueLL<Data>::remove() {
 
     Data data = this->begin();
 
+    if(this->mpEnd == this->mpHead){
+        this->mpEnd = nullptr;
+    }
+
     node * tmp = this->mpHead;
 	this->mpHead = this->mpHead->mpNext;
 
