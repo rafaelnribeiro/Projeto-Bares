@@ -199,6 +199,9 @@ bool infixToPosfix (QueueLL<token> & exps, QueueLL<token> & posFix) {
 
 	StackLL<token> stk;
 
+	SimbolType expected = OPERAND;
+	int pos = 0;
+
 	while(!exps.empty())
 	{
 		token tmp = exps.remove();
@@ -213,9 +216,23 @@ bool infixToPosfix (QueueLL<token> & exps, QueueLL<token> & posFix) {
 			cont = false;
 		}
 
+		if(tmp.type != expected && tmp.info[0] != ')' && tmp.info[0] != '(')
+		{
+			if(expected == OPERATOR)
+			{
+				std::cout << "Erro coluna " << pos << ": Falta operador"<< std::endl;
+			}
+			else
+			{
+				std::cout << "Erro coluna " << pos << ": Falta operando"<< std::endl;
+			}
+			cont = false;
+		}
+
 		if (tmp.type == OPERAND)
 		{
 			posFix.insert(tmp);
+			expected = OPERATOR;
 		}
 		else if (tmp.info[0] == '(')
 		{
@@ -236,7 +253,9 @@ bool infixToPosfix (QueueLL<token> & exps, QueueLL<token> & posFix) {
 				posFix.insert(stk.pop());
 			}
 			stk.push(tmp);
+			expected = OPERAND;
 		}
+		pos = tmp.position;
 	}
 
 	while (!stk.empty())
