@@ -24,16 +24,20 @@ struct token
 };
 
 //Calcula uma expressão posfixa
-int calcPosfix(QueueLL<token> exps)
+bool calcPosfix(QueueLL<token> & exps, int & result)
 {
+	if (exps.empty())
+		return false;
+
 	StackLL<int> stack; //Pilha de inteiros
 	token simb; //Token atual
-	int op1, op2, result;
+	int op1, op2;
+
 
 	while(!exps.empty())
 	{
 		simb = exps.remove(); //Remove um token da fila
-
+		//std::cout << simb.info << std::endl;
 		//Se for um operando
 		if(simb.type == OPERAND)
 		{
@@ -69,7 +73,7 @@ int calcPosfix(QueueLL<token> exps)
 					if(op2 == 0)
 					{
 						std::cout << "Erro coluna " << simb.position << ": Divisão por zero!" << std::endl;
-						return 0;
+						return false;
 					}
 					result = op1 / op2;
 					break;
@@ -86,8 +90,10 @@ int calcPosfix(QueueLL<token> exps)
 			stack.push(result);
 		}
 	}
-	result = stack.pop();
-	return result;
+	if (!stack.empty())
+		result = stack.pop();
+
+	return true;
 }
 
 int comparePref (std::string opr) {
@@ -187,13 +193,25 @@ void stringToInfix(std::string str, QueueLL<token> & exps)
 	}
 }
 //Transforma uma expressão infixa em posfixa
-void infixToPosfix (QueueLL<token> & exps, QueueLL<token> & posFix) {
+bool infixToPosfix (QueueLL<token> & exps, QueueLL<token> & posFix) {
+
+	bool cont = true;
 
 	StackLL<token> stk;
 
 	while(!exps.empty())
 	{
 		token tmp = exps.remove();
+		
+		if (tmp.isValid == false)
+		{
+			if (tmp.type == OPERAND)
+				std::cout << "Erro coluna " << tmp.position << ": Operando '" << tmp.info << "' é inválido!" << std::endl;
+			else
+				std::cout << "Erro coluna " << tmp.position << ": Operador '" << tmp.info << "' é inválido!" << std::endl;
+
+			cont = false;
+		}
 
 		if (tmp.type == OPERAND)
 		{
@@ -219,13 +237,14 @@ void infixToPosfix (QueueLL<token> & exps, QueueLL<token> & posFix) {
 			}
 			stk.push(tmp);
 		}
-
 	}
 
 	while (!stk.empty())
 	{
 		posFix.insert(stk.pop());
 	}
+
+	return cont;
 
 }
 
@@ -258,23 +277,28 @@ int main(int argc, char const *argv[])
 	{
 		QueueLL<token> exps;
 		QueueLL<token> posFix;
+		int result;
 
 		getline(myStream, expression);
-
+		//std::cout << "Chegou aqui 'getline()'" << std::endl;
 		stringToInfix(expression, exps);
+		
+		if (infixToPosfix(exps, posFix))
+		{
+			if (calcPosfix(posFix, result))
+			{
+				std::cout << result << std::endl;	
+			}
+		}
+		
 
-		infixToPosfix(exps, posFix);
-
-		int a = calcPosfix(posFix);
-
-		std::cout << a;
 
 		/*while(!posFix.empty())
 		{
 			token tmp = posFix.remove();
 			std::cout << "{ " << tmp.info << ", " << tmp.type << ", " << tmp.position << ", " << tmp.isValid << "} ";
-		}*/
-		std::cout << std::endl;
+		}
+		std::cout << std::endl;*/
 	}
 
 	return 0;
