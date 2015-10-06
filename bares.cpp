@@ -60,11 +60,11 @@ int calcPosfix(QueueLL<token> exps)
 				case '-':
 					result = op1 - op2;
 					break;
-					
+
 				case '*':
 					result = op1 * op2;
 					break;
-					
+
 				case '/':
 					if(op2 == 0)
 					{
@@ -73,11 +73,11 @@ int calcPosfix(QueueLL<token> exps)
 					}
 					result = op1 / op2;
 					break;
-					
+
 				case '%':
 					result = op1 % op2;
 					break;
-					
+
 				case '^':
 					result = op1 ^ op2;
 					break;
@@ -88,6 +88,38 @@ int calcPosfix(QueueLL<token> exps)
 	}
 	result = stack.pop();
 	return result;
+}
+
+int comparePref (std::string opr) {
+	char c = opr[0];
+	switch(c)
+	{
+		case '+':
+			return 5;
+			break;
+
+		case '-':
+			return 5;
+			break;
+
+		case '*':
+			return 4;
+			break;
+
+		case '/':
+			return 4;
+			break;
+
+		case '%':
+			return 4;
+			break;
+
+		case '^':
+			return 3;
+			break;
+	}
+
+	return 0;
 }
 
 //Cria uma fila de tokens
@@ -154,6 +186,48 @@ void stringToInfix(std::string str, QueueLL<token> & exps)
 		++i;
 	}
 }
+//Transforma uma expressão infixa em posfixa
+void infixToPosfix (QueueLL<token> & exps, QueueLL<token> & posFix) {
+
+	StackLL<token> stk;
+
+	while(!exps.empty())
+	{
+		token tmp = exps.remove();
+
+		if (tmp.type == OPERAND)
+		{
+			posFix.insert(tmp);
+		}
+		else if (tmp.info[0] == '(')
+		{
+			stk.push(tmp);
+		}
+		else if (tmp.info[0] == ')')
+		{
+			while (stk.top().info[0] != '(')
+			{
+				posFix.insert(stk.pop());
+			}
+			stk.pop();
+		}
+		else
+		{
+			while (!stk.empty() && stk.top().info[0] != '(' && comparePref(stk.top().info) <= comparePref(tmp.info))
+			{
+				posFix.insert(stk.pop());
+			}
+			stk.push(tmp);
+		}
+
+	}
+
+	while (!stk.empty())
+	{
+		posFix.insert(stk.pop());
+	}
+
+}
 
 int main(int argc, char const *argv[])
 {
@@ -183,16 +257,23 @@ int main(int argc, char const *argv[])
 	while(!myStream.eof())
 	{
 		QueueLL<token> exps;
+		QueueLL<token> posFix;
 
 		getline(myStream, expression);
-	
+
 		stringToInfix(expression, exps);
 
-		while(!exps.empty())
+		infixToPosfix(exps, posFix);
+
+		int a = calcPosfix(posFix);
+
+		std::cout << a;
+
+		/*while(!posFix.empty())
 		{
-			token tmp = exps.remove();
+			token tmp = posFix.remove();
 			std::cout << "{ " << tmp.info << ", " << tmp.type << ", " << tmp.position << ", " << tmp.isValid << "} ";
-		}
+		}*/
 		std::cout << std::endl;
 	}
 
