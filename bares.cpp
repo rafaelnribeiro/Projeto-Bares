@@ -24,7 +24,7 @@ struct token
 };
 
 
-//Calcula a ordem de precedência dos operadores
+//Calcula a ordem de precedência dos operadores	
 int comparePref (std::string opr) {
 	char c = opr[0];
 	switch(c)
