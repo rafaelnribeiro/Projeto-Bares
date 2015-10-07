@@ -34,13 +34,13 @@ class QueueLL {
         //! Insere um nó ao final da fila.
         /*! @param _data Informação a ser adicionada ao novo nó.
         */
-        void insert (const Data & _data);
+        void insert(const Data & _data);
 
 
         //! Remove o primeiro nó da fila e retorna a informação contida nele.
         /*! @return Informação do nó removido
         */
-        Data remove ();
+        Data remove();
 
         //! Retorna a informação do primeiro nó da fila.
 		/*! @return Informação do primeiro nó da fila.
@@ -60,7 +60,7 @@ class QueueLL {
         //! Esvazia a fila.
         void clear();
 
-        //! Método para depuração
+        // Método para depuração
         inline friend std::ostream &operator << (std::ostream& _os, const QueueLL& _oList) {
 			node * current = _oList.mpHead;
 			_os << "Fila: [ ";

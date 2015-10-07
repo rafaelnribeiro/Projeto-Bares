@@ -4,8 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <utility>
-#include <string>
-#include <vector>
+#include <string>	
 
 std::string digits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
@@ -86,7 +85,7 @@ bool stringToInfix(std::string str, QueueLL<token> & exps)
 			tmp.info = num;
 			tmp.type = OPERAND;
 			tmp.isValid = true;
-			tmp.position = ini;
+			tmp.position = ini + 1;
 
 			//Adiciona o token à fila
 			exps.insert(tmp);
@@ -99,7 +98,7 @@ bool stringToInfix(std::string str, QueueLL<token> & exps)
 
 			token tmp;
 			tmp.info = s;
-			tmp.position = i;
+			tmp.position = i + 1;
 
 			//Se for um operador válido
 			if(valOperators.find(str[i]) != std::string::npos)
@@ -377,10 +376,11 @@ int main(int argc, char const *argv[])
 				if (calcPosfix(posFix, result))
 				{
 					std::cout << result << std::endl;
+
 				}
 			}
+			std::cout << std::endl;
 		}
-		std::cout << std::endl;
 	}
 
 	return 0;
