@@ -24,7 +24,7 @@ struct token
 };
 
 
-
+//Calcula a ordem de precedência dos operadores
 int comparePref (std::string opr) {
 	char c = opr[0];
 	switch(c)
@@ -58,8 +58,12 @@ int comparePref (std::string opr) {
 }
 
 //Cria uma fila de tokens
-void stringToInfix(std::string str, QueueLL<token> & exps)
+bool stringToInfix(std::string str, QueueLL<token> & exps)
 {
+	//Checa se a string enviada é vazia
+	if (str.size() == 0)
+		return false;
+
 	unsigned int i = 0;
 	//Lê a string
 	while(i < str.size())
@@ -120,6 +124,7 @@ void stringToInfix(std::string str, QueueLL<token> & exps)
 		}
 		++i;
 	}
+	return true;
 }
 
 //Transforma uma expressão infixa em posfixa
@@ -142,7 +147,7 @@ bool infixToPosfix (QueueLL<token> & exps, QueueLL<token> & posFix) {
 		//Se já apareceu pelo menos um número
 		if(tmp.type == OPERAND)
 			first = false;
-		
+
 		//Tratamento para o erro de falta de operando/operador
 		if(tmp.type != expected && tmp.info[0] != ')' && tmp.info[0] != '(')
 		{
@@ -216,7 +221,7 @@ bool infixToPosfix (QueueLL<token> & exps, QueueLL<token> & posFix) {
 
 				//Desempilha o '('
 				if(!stk.empty())
-				stk.pop();	
+				stk.pop();
 			}
 		}
 		else
@@ -365,13 +370,14 @@ int main(int argc, char const *argv[])
 
 		getline(myStream, expression);
 
-		stringToInfix(expression, exps);
-		
-		if (infixToPosfix(exps, posFix))
+		if (stringToInfix(expression, exps))
 		{
-			if (calcPosfix(posFix, result))
+			if (infixToPosfix(exps, posFix))
 			{
-				std::cout << result << std::endl;	
+				if (calcPosfix(posFix, result))
+				{
+					std::cout << result << std::endl;
+				}
 			}
 		}
 		std::cout << std::endl;

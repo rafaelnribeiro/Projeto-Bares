@@ -35,7 +35,7 @@ class StackLL
 		*/
 		void push(const Data & _data);
 
-		//! Remove o primeiro nó da pilha e retorna a iformação contida nele.
+		//! Remove o primeiro nó da pilha e retorna a informação contida nele.
 		/*! @return Informação do nó removido
 		*/
 		const Data pop();
@@ -53,7 +53,7 @@ class StackLL
 		//! Esvazia a pilha
 		void clear();
 
-		//Método para depuração
+		//! Método para depuração
 		inline friend
 		std::ostream &operator << (std::ostream& _os, const StackLL& _oList)
 		{
